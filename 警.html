@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>警員資料查詢系統</title>
+
+<style>
+/* 重置與基礎樣式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+  color: #333;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* 頂部導航欄 */
+.header-nav {
+  background: linear-gradient(90deg, #1f2933 0%, #2d3748 100%);
+  color: white;
+  padding: 15px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  font-size: 28px;
+  background: #3b82f6;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+.logo-text h1 {
+  font-size: 1.5rem;
+  margin-bottom: 3px;
+}
+
+.logo-text p {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.nav-link:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 主內容區域 */
+.main-container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.welcome-banner {
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+  color: white;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.2);
+}
+
+.welcome-banner h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.welcome-banner p {
+  opacity: 0.9;
+  max-width: 800px;
+}
+
+/* 卡片佈局 */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid #e5e7eb;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.card-icon {
+  background: #e0f2fe;
+  color: #0369a1;
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-right: 15px;
+}
+
+.card-title {
+  font-size: 1.4rem;
+  color: #1e293b;
+}
+
+.card-subtitle {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-top: 3px;
+}
+
+/* 表單元素 */
+.search-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 16px;
+  transition: all 0.3s;
+  background: #f8fafc;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  background: white;
+}
+
+.search-btn {
+  padding: 0 24px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-btn:hover {
+  background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.search-btn:active {
+  transform: translateY(1px);
+}
+
+.search-tips {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 10px;
+  padding-left: 5px;
+}
+
+/* 結果顯示區域 */
+.result-container {
+  margin-top: 20px;
+  min-height: 60px;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.result-count {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.result-count span {
+  color: #3b82f6;
+}
+
+.clear-btn {
+  background: #f1f5f9;
+  color: #64748b;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.clear-btn:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.result-card {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 15px;
+  border-left: 4px solid #3b82f6;
+}
+
+.result-card:last-child {
+  margin-bottom: 0;
+}
+
+.officer-id {
+  display: inline-block;
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.officer-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 5px;
+}
+
+.officer-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-label {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.detail-value {
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge-active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.no-result {
+  text-align: center;
+  padding: 30px 20px;
+  color: #64748b;
+}
+
+.no-result-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  color: #cbd5e1;
+}
+
+/* 系統資訊卡片 */
+.system-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  margin-top: 30px;
+}
+
+.system-card h3 {
+  color: #1e293b;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.system-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.info-item {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.info-item h4 {
+  color: #3b82f6;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.info-item p {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* 頁腳 */
+.footer {
+  text-align: center;
+  padding: 25px 20px;
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 40px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.footer-link {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-link:hover {
+  color: #3b82f6;
+}
+
+/* 動畫效果 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+</style>
+</head>
+
+<body>
+  <!-- 頂部導航欄 -->
+  <nav class="header-nav">
+    <div class="nav-container">
+      <div class="logo-container">
+        <div class="logo-icon">🚓</div>
+        <div class="logo-text">
+          <h1>警員資料查詢系統</h1>
+          <p>Police Information Lookup</p>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="#" class="nav-link">首頁</a>
+        <a href="#" class="nav-link">警員名錄</a>
+        <a href="#" class="nav-link">系統說明</a>
+        <a href="#" class="nav-link">聯絡我們</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容區域 -->
+  <div class="main-container">
+    <!-- 歡迎標語 -->
+    <div class="welcome-banner">
+      <h2>歡迎使用警員資料查詢系統</h2>
+      <p>本系統為靜態資料查詢展示網站，用於Roblox台灣角色扮演，請不要當作真實警察系統使用。資料僅供參考，所有內容皆為虛構。</p>
+    </div>
+
+    <!-- 查詢卡片區域 -->
+    <div class="card-grid">
+      <!-- 警員編號查詢卡片 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🔢</div>
+          <div>
+            <h2 class="card-title">警員編號查詢</h2>
+            <p class="card-subtitle">輸入警員編號進行精確查詢</p>
+          </div>
+        </div>
+        
+        <div class="search-container">
+          <input type="text" id="searchId" class="search-input" placeholder="例如：1612、5678" maxlength="6">
+          <button class="search-btn" onclick="searchById()">
+            <span>查詢</span>
+            <span>🔍</span>
+          </button>
+        </div>
+        
+        <p class="search-tips">提示：輸入完整的警員編號以獲取準確資料</p>
+        
+        <div class="result-container" id="idResult">
+          <!-- 查詢結果將顯示在這裡 -->
+        </div>
+      </div>
+
+      <!-- 姓名查詢卡片 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">👤</div>
+          <div>
+            <h2 class="card-title">姓名查詢</h2>
+            <p class="card-subtitle">輸入全名或部分姓名進行查詢</p>
+          </div>
+        </div>
+        
+        <div class="search-container">
+          <input type="text" id="searchName" class="search-input" placeholder="例如：陳、李葉子">
+          <button class="search-btn" onclick="searchByName()">
+            <span>查詢</span>
+            <span>🔍</span>
+          </button>
+        </div>
+        
+        <p class="search-tips">提示：支持模糊查詢，輸入部分姓名即可</p>
+        
+        <div class="result-container" id="nameResult">
+          <!-- 查詢結果將顯示在這裡 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 系統說明卡片 -->
+    <div class="system-card">
+      <h3><span>ℹ️</span> 系統說明與使用指南</h3>
+      <p>本系統為靜態資料查詢展示網站，用於Roblox台灣角色扮演，請不要當作真實警察系統使用。</p>
+      
+      <div class="system-info">
+        <div class="info-item">
+          <h4>資料來源</h4>
+          <p>系統內所有警員資料皆為虛構範例，僅供演示用途，與現實中任何個人或單位無關。</p>
+        </div>
+        <div class="info-item">
+          <h4>使用限制</h4>
+          <p>請勿使用本系統進行任何非法活動或冒充真實警務人員。此為角色扮演輔助工具。</p>
+        </div>
+        <div class="info-item">
+          <h4>技術說明</h4>
+          <p>本系統基於HTML/CSS/JavaScript開發，運行於GitHub Pages，無後端資料庫，所有資料儲存於前端。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 頁腳 -->
+  <footer class="footer">
+    <p>© 2026 警員資料查詢系統 · 僅供角色扮演使用 · GitHub Pages</p>
+    <div class="footer-links">
+      <a href="#" class="footer-link">隱私政策</a>
+      <a href="#" class="footer-link">使用條款</a>
+      <a href="#" class="footer-link">GitHub專案</a>
+      <a href="#" class="footer-link">聯絡開發者</a>
+    </div>
+  </footer>
+
+<script>
+const policeData = [
+  {
+    id: "1612",
+    name: "陳小克",
+    rank: "三線三星",
+    unit: "局本部",
+    status: "在職"
+  },
+  {
+    id: "5678",
+    name: "養樂多",
+    rank: "三線二星",
+    unit: "局本部",
+    status: "在職"
+  },
+  {
+    id: "6942",
+    name: "李葉子",
+    rank: "三線一星",
+    unit: "霹靂小組",
+    status: "在職"
+  },
+  {
+    id: "1332",
+    name: "楊吳浩",
+    rank: "一線四星",
+    unit: "霹靂小組",
+    status: "在職"
+  },
+  {
+    id: "4781",
+    name: "楊辰宇",
+    rank: "三線一星",
+    unit: "刑事大隊",
+    status: "在職"
+  },
+  {
+    id: "8745",
+    name: "李輝夜",
+    rank: "一線四星",
+    unit: "刑事大隊",
+    status: "在職"
+  },
+  {
+    id: "1234",
+    name: "謝承泰",
+    rank: "一線三星",
+    unit: "新莊派出所",
+    status: "在職"
+  },
+  {
+    id: "0000",
+    name: "王子軒",
+    rank: "一線三星",
+    unit: "新莊派出所",
+    status: "在職"
+  },
+];
+
+// 支援Enter鍵查詢
+document.getElementById("searchId").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    searchById();
+  }
+});
+
+document.getElementById("searchName").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    searchByName();
+  }
+});
+
+function searchById() {
+  const id = document.getElementById("searchId").value.trim();
+  const result = policeData.find(p => p.id === id);
+  const box = document.getElementById("idResult");
+  
+  // 清空之前的结果
+  box.innerHTML = "";
+  
+  if (result) {
+    const resultHTML = `
+      <div class="result-header">
+        <div class="result-count">查詢結果：<span>1</span> 筆資料</div>
+        <button class="clear-btn" onclick="clearResult('idResult')">清除結果</button>
+      </div>
+      <div class="result-card fade-in">
+        <div class="officer-id">警員編號：${result.id}</div>
+        <div class="officer-name">${result.name}</div>
+        <div class="officer-details">
+          <div class="detail-item">
+            <span class="detail-label">職階：</span>
+            <span class="detail-value">${result.rank}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">單位：</span>
+            <span class="detail-value">${result.unit}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">狀態：</span>
+            <span class="badge ${result.status === '在職' ? 'badge-active' : 'badge-inactive'}">${result.status}</span>
+          </div>
+        </div>
+      </div>
+    `;
+    box.innerHTML = resultHTML;
+  } else {
+    box.innerHTML = `
+      <div class="no-result fade-in">
+        <div class="no-result-icon">🔍</div>
+        <p>查無此警員編號</p>
+        <p class="search-tips">請檢查輸入的編號是否正確，或嘗試使用姓名查詢功能</p>
+      </div>
+    `;
+  }
+}
+
+function searchByName() {
+  const name = document.getElementById("searchName").value.trim();
+  const results = policeData.filter(p => p.name.includes(name));
+  const box = document.getElementById("nameResult");
+  
+  // 清空之前的结果
+  box.innerHTML = "";
+  
+  if (results.length === 0) {
+    box.innerHTML = `
+      <div class="no-result fade-in">
+        <div class="no-result-icon">🔍</div>
+        <p>查無符合條件的警員</p>
+        <p class="search-tips">請嘗試輸入其他關鍵字或使用警員編號查詢功能</p>
+      </div>
+    `;
+    return;
+  }
+  
+  let resultHTML = `
+    <div class="result-header">
+      <div class="result-count">查詢結果：<span>${results.length}</span> 筆資料</div>
+      <button class="clear-btn" onclick="clearResult('nameResult')">清除結果</button>
+    </div>
+  `;
+  
+  results.forEach(p => {
+    resultHTML += `
+      <div class="result-card fade-in">
+        <div class="officer-id">警員編號：${p.id}</div>
+        <div class="officer-name">${p.name}</div>
+        <div class="officer-details">
+          <div class="detail-item">
+            <span class="detail-label">職階：</span>
+            <span class="detail-value">${p.rank}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">單位：</span>
+            <span class="detail-value">${p.unit}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">狀態：</span>
+            <span class="badge ${p.status === '在職' ? 'badge-active' : 'badge-inactive'}">${p.status}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  box.innerHTML = resultHTML;
+}
+
+// 清除結果功能
+function clearResult(resultId) {
+  const box = document.getElementById(resultId);
+  box.innerHTML = "";
+  
+  // 如果清除的是ID查詢結果，同時清空輸入框
+  if (resultId === 'idResult') {
+    document.getElementById('searchId').value = '';
+  } else if (resultId === 'nameResult') {
+    document.getElementById('searchName').value = '';
+  }
+}
+
+// 初始載入時顯示歡迎信息
+window.onload = function() {
+  const idBox = document.getElementById("idResult");
+  const nameBox = document.getElementById("nameResult");
+  
+  idBox.innerHTML = `
+    <div class="no-result">
+      <div class="no-result-icon">🔢</div>
+      <p>請輸入警員編號開始查詢</p>
+    </div>
+  `;
+  
+  nameBox.innerHTML = `
+    <div class="no-result">
+      <div class="no-result-icon">👤</div>
+      <p>請輸入警員姓名開始查詢</p>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
