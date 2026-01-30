@@ -935,8 +935,8 @@ body {
           <div class="contact-item">
             <div class="contact-icon">📧</div>
             <div class="contact-details">
-              <h4>Discord</h4>
-              <p>https://discord.gg/EVHBzFC4Fx</p>
+              <h4>電子郵件</h4>
+              <p>support@police-system.demo</p>
               <p style="font-size: 0.85rem; color: #94a3b8;">一般問題請優先使用聯絡表單</p>
             </div>
           </div>
@@ -1042,12 +1042,26 @@ const policeData = [
     status: "在職"
   },
   {
-    id: "5487"
-    name: "林識賢"
-    rank: "一線三星"
-    unit: "新莊派出所"
+    id: "1111",
+    name: "張文華",
+    rank: "二線一星",
+    unit: "交通大隊",
     status: "在職"
   },
+  {
+    id: "2222",
+    name: "林美玲",
+    rank: "一線四星",
+    unit: "婦幼隊",
+    status: "在職"
+  },
+  {
+    id: "3333",
+    name: "黃國偉",
+    rank: "三線一星",
+    unit: "保安大隊",
+    status: "離職"
+  }
 ];
 
 // 頁面切換功能
@@ -1410,7 +1424,7 @@ window.onload = function() {
   }
   
   if (rankSelect) {
-    const rankOrder = ['一線三星', '一線四星', '二線一星', '三線一星', '三線二星', '三線三星'];
+    const rankOrder = ['一線三星', '一線四星', '二線一星','二線二星','二線三星','二線四星', '三線一星', '三線二星', '三線三星'];
     const sortedRanks = ranks.sort((a, b) => {
       return rankOrder.indexOf(a) - rankOrder.indexOf(b);
     });
